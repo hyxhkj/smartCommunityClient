@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+       Copyright 2009-2012 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ArticleInfo">
+
+  <resultMap type="com.smartCommunity.beans.ArticleBean" id="ArticleBeanResult">
+    <id column="articleId" jdbcType="INTEGER" property="articleId"/>
+    <result column="userId" jdbcType="INTEGER" property="userId"/>
+    <result column="userName" jdbcType="VARCHAR" property="userName"/>
+    <result column="articleContext" jdbcType="VARCHAR" property="articleContext"/>
+    <result column="timestamp" jdbcType="DOUBLE" property="timestamp"/>
+    <result column="likenum" jdbcType="INTEGER" property="like"/>
+  </resultMap>
+
+  <select id="getArticles" parameterType="int" resultMap="ArticleBeanResult">
+    SELECT articleId, userId, userName, articleContext, timestamp, likenum FROM articleInfo WHERE 1=1
+    limit 0, 50;
+  </select>
+  
+  
+  <insert id="postArticle" parameterType="com.smartCommunity.beans.ArticleBean" useGeneratedKeys="false">
+    INSERT INTO articleInfo
+    ( articleId,
+    userId,
+    userName,
+    articleContext,
+    timestamp,
+    likenum
+    )
+    VALUES
+    ( NULL,
+    #{userId,jdbcType=INTEGER},
+    #{userName,jdbcType=VARCHAR},
+    #{articleContext,jdbcType=VARCHAR},
+    #{timestamp,jdbcType=BIGINT},
+    #{likenum,jdbcType=INTEGER}
+    )
+  </insert>
+  
+  <insert id="replyArticle" parameterType="com.smartCommunity.beans.CommentBean" useGeneratedKeys="false">
+    INSERT INTO articleInfo
+    ( commentId,
+    articleId,
+    userId,
+    userName,
+    commentContext,
+    timestamp
+    )
+    VALUES
+    ( NULL,
+    #{articleId,jdbcType=INTEGER},
+    #{userId,jdbcType=INTEGER},
+    #{userName,jdbcType=VARCHAR},
+    #{commentContext,jdbcType=VARCHAR},
+    #{timestamp,jdbcType=BIGINT}
+    )
+  </insert>
+  
+  <insert id="collectArticle" parameterType="com.smartCommunity.beans.FavoriteArticleBean" useGeneratedKeys="false">
+    INSERT INTO favoriteInfo
+    ( favoriteId,
+    userId,
+    userName,
+    articleId,
+    timestamp
+    )
+    VALUES
+    ( NULL,
+    #{userId,jdbcType=INTEGER},
+    #{userName,jdbcType=VARCHAR},
+    #{articleId,jdbcType=INTEGER},
+    #{timestamp,jdbcType=BIGINT}
+    )
+  </insert>
+  
+  <delete id="deleteArticle" parameterType="com.smartCommunity.beans.ArticleBean">
+      DELETE FROM articleInfo where articleId=#{articleId}
+  </delete>
+  
+</mapper>
